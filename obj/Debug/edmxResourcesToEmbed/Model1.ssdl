@@ -1,0 +1,171 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Хранилище ip12Model" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="principal_id" Type="int" Nullable="false" />
+    <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="version" Type="int" />
+    <Property Name="definition" Type="varbinary(max)" />
+  </EntityType>
+  <EntityType Name="Владельцы">
+    <Key>
+      <PropertyRef Name="Код" />
+    </Key>
+    <Property Name="Код" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Фамилия" Type="nvarchar" MaxLength="50" />
+    <Property Name="Имя" Type="nvarchar" MaxLength="50" />
+    <Property Name="Отчество" Type="nvarchar" MaxLength="50" />
+    <Property Name="Телефон" Type="nvarchar" MaxLength="50" />
+    <Property Name="Адрес" Type="nvarchar" MaxLength="50" />
+    <Property Name="Пароль" Type="nvarchar" MaxLength="50" />
+    <Property Name="Логин" Type="nvarchar" MaxLength="50" />
+    <Property Name="картинка" Type="nvarchar(max)" />
+  </EntityType>
+  <EntityType Name="Доли">
+    <Key>
+      <PropertyRef Name="Код" />
+    </Key>
+    <Property Name="Код" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Доля" Type="nvarchar" MaxLength="50" />
+    <Property Name="Код_Владельца" Type="int" />
+    <Property Name="Код_Магазина" Type="int" />
+  </EntityType>
+  <EntityType Name="Магазины">
+    <Key>
+      <PropertyRef Name="Код" />
+    </Key>
+    <Property Name="Код" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Название" Type="nvarchar" MaxLength="50" />
+    <Property Name="Адрес" Type="nvarchar" MaxLength="50" />
+    <Property Name="Телефон" Type="nvarchar" MaxLength="50" />
+    <Property Name="Уставной_капитал" Type="int" />
+    <Property Name="Код_Профиля" Type="int" />
+  </EntityType>
+  <EntityType Name="Поставки">
+    <Key>
+      <PropertyRef Name="Код" />
+    </Key>
+    <Property Name="Код" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Размер_поставки" Type="int" />
+    <Property Name="Код_Поставщика" Type="int" />
+    <Property Name="Код_Магазина" Type="int" />
+  </EntityType>
+  <EntityType Name="Поставщики">
+    <Key>
+      <PropertyRef Name="Код" />
+    </Key>
+    <Property Name="Код" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Организация" Type="nvarchar" MaxLength="50" />
+    <Property Name="Адрес" Type="nvarchar" MaxLength="50" />
+    <Property Name="Телефон" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Профиль">
+    <Key>
+      <PropertyRef Name="Код" />
+    </Key>
+    <Property Name="Код" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Профиль" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <Association Name="FK_Доли_Владельцы">
+    <End Role="Владельцы" Type="Self.Владельцы" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Доли" Type="Self.Доли" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Владельцы">
+        <PropertyRef Name="Код" />
+      </Principal>
+      <Dependent Role="Доли">
+        <PropertyRef Name="Код_Магазина" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Доли_Магазины">
+    <End Role="Магазины" Type="Self.Магазины" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Доли" Type="Self.Доли" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Магазины">
+        <PropertyRef Name="Код" />
+      </Principal>
+      <Dependent Role="Доли">
+        <PropertyRef Name="Код_Магазина" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Магазины_Профиль">
+    <End Role="Профиль" Type="Self.Профиль" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Магазины" Type="Self.Магазины" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Профиль">
+        <PropertyRef Name="Код" />
+      </Principal>
+      <Dependent Role="Магазины">
+        <PropertyRef Name="Код_Профиля" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Поставки_Магазины">
+    <End Role="Магазины" Type="Self.Магазины" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Поставки" Type="Self.Поставки" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Магазины">
+        <PropertyRef Name="Код" />
+      </Principal>
+      <Dependent Role="Поставки">
+        <PropertyRef Name="Код_Магазина" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Поставки_Поставщики">
+    <End Role="Поставщики" Type="Self.Поставщики" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Поставки" Type="Self.Поставки" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Поставщики">
+        <PropertyRef Name="Код" />
+      </Principal>
+      <Dependent Role="Поставки">
+        <PropertyRef Name="Код_Поставщика" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="Хранилище ip12ModelContainer">
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Владельцы" EntityType="Self.Владельцы" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Доли" EntityType="Self.Доли" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Магазины" EntityType="Self.Магазины" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Поставки" EntityType="Self.Поставки" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Поставщики" EntityType="Self.Поставщики" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Профиль" EntityType="Self.Профиль" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_Доли_Владельцы" Association="Self.FK_Доли_Владельцы">
+      <End Role="Владельцы" EntitySet="Владельцы" />
+      <End Role="Доли" EntitySet="Доли" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Доли_Магазины" Association="Self.FK_Доли_Магазины">
+      <End Role="Магазины" EntitySet="Магазины" />
+      <End Role="Доли" EntitySet="Доли" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Магазины_Профиль" Association="Self.FK_Магазины_Профиль">
+      <End Role="Профиль" EntitySet="Профиль" />
+      <End Role="Магазины" EntitySet="Магазины" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Поставки_Магазины" Association="Self.FK_Поставки_Магазины">
+      <End Role="Магазины" EntitySet="Магазины" />
+      <End Role="Поставки" EntitySet="Поставки" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Поставки_Поставщики" Association="Self.FK_Поставки_Поставщики">
+      <End Role="Поставщики" EntitySet="Поставщики" />
+      <End Role="Поставки" EntitySet="Поставки" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
